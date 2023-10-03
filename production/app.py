@@ -1,10 +1,11 @@
 from flask import Flask, request, jsonify
 import tensorflow as tf
 import numpy as np
-from flask_cors import CORS
+from flask_cors import CORS, cross_origin
 
 app = Flask(__name__)
 CORS(app)
+app.config['CORS_HEADERS'] = 'Content-Type'
 
 # Load your TensorFlow model
 # Replace with the path to your SavedModel directory
@@ -12,11 +13,13 @@ model = tf.saved_model.load("my_model")
 
 
 @app.route('/', methods=['GET'])
+@cross_origin()
 def hello_world():
     return "Hello World!"
 
 
 @app.route('/predict', methods=['POST'])
+@cross_origin()
 def predict():
     try:
         # Get the JSON data from the request
