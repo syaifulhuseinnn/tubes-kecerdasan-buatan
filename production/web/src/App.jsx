@@ -28,7 +28,7 @@ function App() {
   const handleSubmitNewTwit = async (e) => {
     e.preventDefault();
     try {
-      const response = await fetch("http://syaifulhusein.me/predict", {
+      const response = await fetch("http://localhost:5002/predict", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
@@ -47,7 +47,7 @@ function App() {
           email: "batistuta@gmail.com",
           text: newTwit,
           likes: random.int(0, 200),
-          comments: random.int(0, 1000),
+          comments: random.int(0, 10),
           createdAt: Date.now(),
         };
 

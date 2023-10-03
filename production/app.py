@@ -1,7 +1,7 @@
 from flask import Flask, request, jsonify
 import tensorflow as tf
 import numpy as np
-from flask_cors import CORS
+from flask_cors import CORS, cross_origin
 
 app = Flask(__name__)
 CORS(app)
