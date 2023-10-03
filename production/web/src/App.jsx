@@ -44,6 +44,7 @@ function App() {
 
         const payload = {
           id: uuidv4(),
+          email: "batistuta@gmail.com",
           text: newTwit,
           likes: random.int(0, 200),
           comments: random.int(0, 1000),
