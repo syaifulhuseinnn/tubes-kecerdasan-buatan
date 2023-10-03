@@ -1,11 +1,10 @@
 from flask import Flask, request, jsonify
 import tensorflow as tf
 import numpy as np
-from flask_cors import CORS, cross_origin
+from flask_cors import CORS
 
 app = Flask(__name__)
 CORS(app)
-app.config['CORS_HEADERS'] = 'Content-Type'
 
 # Load your TensorFlow model
 # Replace with the path to your SavedModel directory
@@ -43,6 +42,13 @@ def predict():
 
         # Format the predictions as class labels
         result = {"prediction": predicted_labels[0], "text": text}
+
+        # Set CORS headers for this route
+        response = jsonify(result)
+        # You can restrict this to your domain if needed
+        response.headers.add("Access-Control-Allow-Origin", "*")
+        response.headers.add("Access-Control-Allow-Methods", "POST")
+        response.headers.add("Access-Control-Allow-Headers", "Content-Type")
 
         return jsonify(result)
     except Exception as e:
