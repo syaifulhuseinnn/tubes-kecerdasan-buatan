@@ -1,5 +1,7 @@
 import React from "react";
 import { Avatar, HStack, VStack, Heading, Text } from "@chakra-ui/react";
+import getRandomColor from "../helpers/getRandomColor";
+import getRandomStyle from "../helpers/getRandomStyle";
 
 export default function TwitComment({ text, email }) {
   return (
@@ -12,8 +14,10 @@ export default function TwitComment({ text, email }) {
       <HStack>
         <Avatar
           name={email}
-          src={`https://api.dicebear.com/7.x/open-peeps/svg?seed=${email}&backgroundColor=068DA9`}
+          src={`https://api.dicebear.com/7.x/${getRandomStyle()}/svg?seed=${email}&backgroundColor=${getRandomColor()}`}
           size={{ base: "md" }}
+          borderWidth={1}
+          borderColor="black"
         />
         <VStack alignItems="flex-start" gap={1}>
           <Heading size="xs">{email.split("@")[0]}</Heading>

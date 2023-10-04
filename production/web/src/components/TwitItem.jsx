@@ -113,8 +113,12 @@ export default function TwitItem({
         >
           <HStack>
             <Avatar
-              src="https://api.dicebear.com/7.x/open-peeps/svg?backgroundColor=b6e3f4,c0aede,d1d4f9"
+              src={`https://api.dicebear.com/7.x/open-peeps/svg?backgroundColor=c0aede,d1d4f9&seed=${
+                email.split("@")[0]
+              }`}
               size={{ base: "md" }}
+              borderWidth={1}
+              borderColor="black"
             />
             <Stack direction={{ base: "column" }} gap={{ base: 1 }}>
               <Heading size={{ base: "sm" }}>{email.split("@")[0]}</Heading>

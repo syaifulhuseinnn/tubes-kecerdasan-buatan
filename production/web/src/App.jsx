@@ -1,16 +1,14 @@
 import { useState } from "react";
 import {
   Container,
-  Input,
   Flex,
   Heading,
-  Image,
+  Avatar,
   Stack,
-  Button,
-  Box,
   Text,
   Alert,
   useDisclosure,
+  HStack,
 } from "@chakra-ui/react";
 import PostTwit from "./components/PostTwit";
 import TwitItem from "./components/TwitItem";
@@ -64,7 +62,7 @@ function App() {
   };
 
   return (
-    <Container p={{ base: 0 }}>
+    <Container p={{ base: 0 }} maxW="full">
       <Flex
         bgColor="#4942E4"
         p={{ base: 4 }}
@@ -72,51 +70,59 @@ function App() {
         justifyContent={{ base: "space-between" }}
         alignItems={{ base: "center" }}
       >
-        <Heading>Twittir</Heading>
-        <Image
-          boxSize="40px"
-          borderRadius="full"
-          src="https://api.dicebear.com/7.x/open-peeps/svg?backgroundColor=b6e3f4,c0aede,d1d4f9"
-          alt="profile picture"
-        />
+        <Heading>Twitwar</Heading>
+        <HStack>
+          <Avatar
+            src="https://api.dicebear.com/7.x/open-peeps/svg?backgroundColor=b6e3f4,c0aede,d1d4f9"
+            alt="profile picture"
+            borderWidth={1}
+            borderColor="black"
+          />
+          <Text display={{ base: "none", md: "block" }}>Batistuta</Text>
+        </HStack>
       </Flex>
-      <Stack direction={{ base: "column" }} p={{ base: 4 }}>
-        <PostTwit
-          setNewTwit={setNewTwit}
-          newTwit={newTwit}
-          handleSubmitNewTwit={handleSubmitNewTwit}
-        />
-        <Stack
-          direction={{ base: "column" }}
-          my={{ base: 8 }}
-          gap={{ base: 8 }}
-        >
-          <Alert
-            status="info"
-            borderRadius="md"
-            display={isOpen ? "block" : "none"}
+      <Container p={{ base: 0 }}>
+        <Stack direction={{ base: "column" }} p={{ base: 4 }}>
+          <PostTwit
+            setNewTwit={setNewTwit}
+            newTwit={newTwit}
+            handleSubmitNewTwit={handleSubmitNewTwit}
+          />
+          <Stack
+            direction={{ base: "column" }}
+            my={{ base: 8 }}
+            gap={{ base: 8 }}
           >
-            <Text>
-              ℹ️ Twit kamu <Text as="u">disembunyikan</Text> karena mengandung{" "}
-              <Text as="u">pornoteks</Text>!
-            </Text>
-          </Alert>
-          {twits
-            .sort((a, b) => b.createdAt - a.createdAt)
-            .map((item) => (
-              <TwitItem
-                key={item.id}
-                id={item.id}
-                email={item.email}
-                text={item.text}
-                likes={item.likes}
-                comments={item.comments}
-                imageUrl={item.imageUrl}
-                createdAt={item.createdAt}
-              />
-            ))}
+            <Alert
+              status="info"
+              borderRadius="md"
+              display={isOpen ? "block" : "none"}
+            >
+              <Text>
+                <Text as="span" fontSize="2xl">
+                  🙅‍♂️
+                </Text>{" "}
+                Twit kamu <Text as="u">disembunyikan</Text> karena mengandung{" "}
+                <Text as="u">pornoteks</Text>!
+              </Text>
+            </Alert>
+            {twits
+              .sort((a, b) => b.createdAt - a.createdAt)
+              .map((item) => (
+                <TwitItem
+                  key={item.id}
+                  id={item.id}
+                  email={item.email}
+                  text={item.text}
+                  likes={item.likes}
+                  comments={item.comments}
+                  imageUrl={item.imageUrl}
+                  createdAt={item.createdAt}
+                />
+              ))}
+          </Stack>
         </Stack>
-      </Stack>
+      </Container>
     </Container>
   );
 }

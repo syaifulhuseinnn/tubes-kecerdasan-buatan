@@ -10,7 +10,7 @@ const data = [
     likes: random.int(0, 200),
     comments: random.int(0, 10),
     imageUrl:
-      "https://images.pexels.com/photos/6763716/pexels-photo-6763716.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=2",
+      "https://images.pexels.com/photos/1829007/pexels-photo-1829007.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=2",
     createdAt: getRandomEpochTime(),
   },
   {
