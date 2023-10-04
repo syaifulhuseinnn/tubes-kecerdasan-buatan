@@ -1,9 +1,17 @@
-import React from "react";
+import React, { useCallback, useEffect, useState } from "react";
 import { Avatar, HStack, VStack, Heading, Text } from "@chakra-ui/react";
 import getRandomColor from "../helpers/getRandomColor";
 import getRandomStyle from "../helpers/getRandomStyle";
 
 export default function TwitComment({ text, email }) {
+  const [bgColor, setBgColor] = useState("");
+  const [style, setStyle] = useState("");
+
+  useEffect(() => {
+    setBgColor(getRandomColor());
+    setStyle(getRandomStyle());
+  }, []);
+
   return (
     <VStack
       alignItems="flex-start"
@@ -14,7 +22,7 @@ export default function TwitComment({ text, email }) {
       <HStack>
         <Avatar
           name={email}
-          src={`https://api.dicebear.com/7.x/${getRandomStyle()}/svg?seed=${email}&backgroundColor=${getRandomColor()}`}
+          src={`https://api.dicebear.com/7.x/${style}/svg?seed=${email}&backgroundColor=${bgColor}`}
           size={{ base: "md" }}
           borderWidth={1}
           borderColor="black"
