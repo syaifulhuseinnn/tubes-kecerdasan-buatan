@@ -61,7 +61,7 @@ export default function TwitItem({
 
   const handleSubmitComment = async (newComment) => {
     try {
-      const response = await fetch("http://syaifulhusein.me/predict", {
+      const response = await fetch("https://syaifulhusein.me/predict", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",

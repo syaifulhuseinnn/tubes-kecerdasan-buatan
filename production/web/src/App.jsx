@@ -28,7 +28,7 @@ function App() {
   const handleSubmitNewTwit = async (e) => {
     e.preventDefault();
     try {
-      const response = await fetch("http://syaifulhusein.me/predict", {
+      const response = await fetch("https://syaifulhusein.me/predict", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
