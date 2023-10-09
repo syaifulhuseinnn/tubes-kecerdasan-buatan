@@ -19,6 +19,9 @@ import transformTimestamp from "../helpers/transformTimestamp";
 import { API_BASE_URL, COMMENTS_URL } from "../constant";
 import { Formik, Form } from "formik";
 import random from "random";
+import { v4 as uuidv4 } from "uuid";
+import getRandomColor from "../helpers/getRandomColor";
+import getRandomStyle from "../helpers/getRandomStyle";
 
 function CommentForm({ handleSubmitComment }) {
   return (
@@ -106,11 +109,19 @@ export default function TwitItem({
     try {
       const response = await fetch(`${COMMENTS_URL}/comments`);
       const data = await response.json();
+      const newData = [...data].map((item) => {
+        item.profilePictureUrl = `https://api.dicebear.com/7.x/${getRandomStyle()}/svg?seed=${
+          email.split("@")[0]
+        }&backgroundColor=${getRandomColor()}`;
+
+        return item;
+      });
+      // console.log(newData);
 
       const startIndex = random.int(0, data.length - commentLength);
       const endIndex = startIndex + commentLength;
-      console.log(startIndex, endIndex);
-      setCommentsData(data.slice(startIndex, endIndex));
+
+      setCommentsData(newData.slice(startIndex, endIndex));
     } catch (error) {
       console.error(error);
     }
@@ -132,15 +143,12 @@ export default function TwitItem({
       const data = await response.json();
 
       if (data.prediction === "POSITIF") {
-        const copyCommentsData = [...commentsData];
-
         const payload = {
-          id: user.id,
+          id: uuidv4(),
           email: `${user.username}@mail.com`,
           body: newComment,
+          profilePictureUrl: user.profile_picture,
         };
-
-        copyCommentsData.push(payload);
 
         setNewCommentPayload([...newCommentPayload, payload]);
 
@@ -223,6 +231,7 @@ export default function TwitItem({
                   id={comment.id}
                   email={comment.email}
                   text={comment.body}
+                  profilePictureUrl={comment.profilePictureUrl}
                 />
               ))}
               {/* Button load more comments */}
@@ -244,6 +253,7 @@ export default function TwitItem({
                     id={item.id}
                     email={item.email}
                     text={item.body}
+                    profilePictureUrl={item.profilePictureUrl}
                   />
                 ))}
               {/* Show alert if new comment contains pornoteks */}
