@@ -33,7 +33,7 @@ const data = [
     email: "Mallory_Kunze@marie.org",
     text: "Gue mau kasih tau ajanih kalo ejakulasi dini primer itu ejakulasi dini yang selalu dialami oleh seorang pria sejak dia pertama kali melakukan hubungan seksual atau tiap kali berhubungan seksual",
     likes: random.int(0, 200),
-    comments: 1,
+    comments: random.int(0, 10),
     imageUrl: "",
     profilePictureUrl: `${PROFILE_PICT_URL}/${getRandomStyle()}/svg?backgroundColor=${getRandomColor()}`,
     createdAt: getRandomTimestampWithTimeZone(),
@@ -43,10 +43,32 @@ const data = [
     email: "Melissa@marie.org",
     text: "Gue cantik ga pake baju ini???",
     likes: random.int(0, 200),
-    comments: 1,
+    comments: random.int(0, 10),
     imageUrl:
       "https://images.pexels.com/photos/733872/pexels-photo-733872.jpeg?auto=compress&cs=tinysrgb&w=800",
     profilePictureUrl: `${PROFILE_PICT_URL}/${getRandomStyle()}/svg?backgroundColor=${getRandomColor()}`,
+    createdAt: getRandomTimestampWithTimeZone(),
+  },
+  {
+    id: uuidv4(),
+    email: "releasenine99@marie.org",
+    text: "Website pemerintah bobrok, tim teknisinya masa gaada plan a,b,c. Tiap tahun permasalahannya sama aja gaada kemajuan. Ini jelek bgt sih, udah kesalahan pihak sono maintenance di detik akhir tapi ga dikasi perpanjangan kebangetan",
+    likes: random.int(0, 200),
+    comments: random.int(0, 10),
+    imageUrl:
+      "https://pbs.twimg.com/media/F7_1msIbcAA9STn?format=jpg&name=large",
+    profilePictureUrl: `https://pbs.twimg.com/profile_images/1584850344408125440/7iTYnheK_400x400.jpg`,
+    createdAt: getRandomTimestampWithTimeZone(),
+  },
+  {
+    id: uuidv4(),
+    email: "KangManto123@marie.org",
+    text: "Yahhhh kok jadi ngelunjak? Kembali kejamam batu dong, ayam ditukar sama beras.",
+    likes: random.int(0, 200),
+    comments: random.int(0, 10),
+    imageUrl:
+      "https://pbs.twimg.com/media/F7-lE7IbUAAaT3T?format=jpg&name=900x900",
+    profilePictureUrl: `https://pbs.twimg.com/profile_images/1632593988107780096/rkbWXdxa_400x400.jpg`,
     createdAt: getRandomTimestampWithTimeZone(),
   },
 ];

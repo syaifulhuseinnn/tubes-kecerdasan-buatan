@@ -206,8 +206,13 @@ export default function TwitItem({
           <Text>{text}</Text>
           {/* Twit image if exist */}
           {imageUrl && (
-            <AspectRatio ratio={4 / 3} mt={{ base: 4 }}>
-              <Image src={imageUrl} alt="naruto" objectFit="cover" />
+            <AspectRatio ratio={1 / 1} mt={{ base: 4 }}>
+              <Image
+                src={imageUrl}
+                alt="naruto"
+                objectFit="cover"
+                loading="lazy"
+              />
             </AspectRatio>
           )}
           {/* Button Likes and Comments */}
