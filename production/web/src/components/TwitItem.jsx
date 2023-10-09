@@ -94,7 +94,6 @@ export default function TwitItem({
   const [commentsData, setCommentsData] = useState([]);
   const [commentsLimit, setCommentsLimit] = useState(2);
   const [commentLength, setCommentLength] = useState(comments);
-  const [newComment, setNewComment] = useState("");
   const [newCommentPayload, setNewCommentPayload] = useState([]);
 
   const [bgColor, setBgColor] = useState("");
