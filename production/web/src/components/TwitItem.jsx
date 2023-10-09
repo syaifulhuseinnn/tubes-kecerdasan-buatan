@@ -12,6 +12,7 @@ import {
   Avatar,
   AspectRatio,
   Alert,
+  Textarea,
 } from "@chakra-ui/react";
 import TwitComment from "./TwitComment";
 import getRandomColor from "../helpers/getRandomColor";
@@ -40,13 +41,14 @@ function CommentForm({ handleSubmitComment }) {
           <Stack
             mt={{ base: 4 }}
             ml={{ base: 4 }}
-            direction={{ base: "column", md: "row" }}
+            direction={{ base: "column" }}
           >
-            <Input
+            <Textarea
               placeholder="Tulis komentar kamu"
               onChange={props.handleChange}
               value={props.values.comment}
               name="comment"
+              resize="none"
             />
             <Button
               bgColor="#8696FE"
