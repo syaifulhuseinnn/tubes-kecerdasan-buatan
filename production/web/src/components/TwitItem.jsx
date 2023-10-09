@@ -37,7 +37,11 @@ function CommentForm({ handleSubmitComment }) {
     >
       {(props) => (
         <Form>
-          <HStack mt={{ base: 4 }} ml={{ base: 4 }}>
+          <Stack
+            mt={{ base: 4 }}
+            ml={{ base: 4 }}
+            direction={{ base: "column", md: "row" }}
+          >
             <Input
               placeholder="Tulis komentar kamu"
               onChange={props.handleChange}
@@ -50,11 +54,13 @@ function CommentForm({ handleSubmitComment }) {
               type="submit"
               isLoading={props.isSubmitting}
               loadingText="Mengirim"
+              maxWidth={{ base: "fit-content" }}
+              alignSelf={{ base: "flex-end" }}
               _hover={{ backgroundColor: "#4942E4" }}
             >
               Kirim
             </Button>
-          </HStack>
+          </Stack>
         </Form>
       )}
     </Formik>
