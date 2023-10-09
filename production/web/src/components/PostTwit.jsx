@@ -39,7 +39,7 @@ export default function PostTwit({ handleSubmitNewTwit }) {
               color="white"
               type="submit"
               isLoading={props.isSubmitting}
-              loadingText="Twitting"
+              loadingText="Mengirim"
               _hover={{ backgroundColor: "#4942E4" }}
             >
               Twit 🚀

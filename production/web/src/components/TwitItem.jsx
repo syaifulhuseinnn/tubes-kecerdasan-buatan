@@ -49,7 +49,7 @@ function CommentForm({ handleSubmitComment }) {
               color="white"
               type="submit"
               isLoading={props.isSubmitting}
-              loadingText="Kirim"
+              loadingText="Mengirim"
               _hover={{ backgroundColor: "#4942E4" }}
             >
               Kirim
