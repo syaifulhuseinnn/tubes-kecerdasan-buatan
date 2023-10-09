@@ -12,9 +12,54 @@ import {
   Avatar,
   AspectRatio,
   Alert,
-  Textarea,
 } from "@chakra-ui/react";
 import TwitComment from "./TwitComment";
+import getRandomColor from "../helpers/getRandomColor";
+import getRandomStyle from "../helpers/getRandomStyle";
+import transformTimestamp from "../helpers/transformTimestamp";
+import { PROFILE_PICT_URL, API_BASE_URL, COMMENTS_URL } from "../constant";
+import { Formik, Form } from "formik";
+
+function CommentForm({ handleSubmitComment }) {
+  return (
+    <Formik
+      initialValues={{ comment: "" }}
+      onSubmit={async (values, actions) => {
+        console.log(values);
+        try {
+          await handleSubmitComment(values.comment);
+          actions.setSubmitting(false);
+          actions.resetForm();
+        } catch (error) {
+          console.error(error);
+        }
+      }}
+    >
+      {(props) => (
+        <Form>
+          <HStack mt={{ base: 4 }} ml={{ base: 4 }}>
+            <Input
+              placeholder="Tulis komentar kamu"
+              onChange={props.handleChange}
+              value={props.values.comment}
+              name="comment"
+            />
+            <Button
+              bgColor="#8696FE"
+              color="white"
+              type="submit"
+              isLoading={props.isSubmitting}
+              loadingText="Kirim"
+              _hover={{ backgroundColor: "#4942E4" }}
+            >
+              Kirim
+            </Button>
+          </HStack>
+        </Form>
+      )}
+    </Formik>
+  );
+}
 
 export default function TwitItem({
   id,
@@ -25,10 +70,12 @@ export default function TwitItem({
   createdAt,
   imageUrl,
 }) {
+  // Comment section
   const { isOpen, onToggle } = useDisclosure({
     defaultIsOpen: false,
   });
 
+  // Alert if comment contain pornoteks
   const { isOpen: isOpenAltCom, onToggle: onToggleAltCom } = useDisclosure({
     defaultIsOpen: false,
   });
@@ -44,11 +91,17 @@ export default function TwitItem({
   const [newComment, setNewComment] = useState("");
   const [newCommentPayload, setNewCommentPayload] = useState([]);
 
+  const [bgColor, setBgColor] = useState("");
+  const [style, setStyle] = useState("");
+
+  useEffect(() => {
+    setBgColor(getRandomColor());
+    setStyle(getRandomStyle());
+  }, []);
+
   const getComments = async () => {
     try {
-      const response = await fetch(
-        "https://jsonplaceholder.typicode.com/comments"
-      );
+      const response = await fetch(`${COMMENTS_URL}/comments`);
 
       const data = await response.json();
       setCommentsData(data.slice(0, commentLength));
@@ -61,7 +114,7 @@ export default function TwitItem({
 
   const handleSubmitComment = async (newComment) => {
     try {
-      const response = await fetch("https://syaifulhusein.me/predict", {
+      const response = await fetch(`${API_BASE_URL}/predict`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
@@ -85,7 +138,7 @@ export default function TwitItem({
         setNewCommentPayload([...newCommentPayload, payload]);
         // setCommentsData(copyCommentsData);
         setCommentLength((prev) => (prev += 1));
-        setNewComment("");
+        // setNewComment("");
         onOpenAppendNewComment();
       } else {
         onToggleAltCom();
@@ -96,6 +149,7 @@ export default function TwitItem({
   };
 
   useEffect(() => {
+    // get comments data if comments section is open
     if (isOpen) {
       if (commentsData.length < 1) {
         getComments();
@@ -113,7 +167,7 @@ export default function TwitItem({
         >
           <HStack>
             <Avatar
-              src={`https://api.dicebear.com/7.x/open-peeps/svg?backgroundColor=c0aede,d1d4f9&seed=${
+              src={`${PROFILE_PICT_URL}/${style}/svg?backgroundColor=${bgColor}&seed=${
                 email.split("@")[0]
               }`}
               size={{ base: "md" }}
@@ -128,16 +182,19 @@ export default function TwitItem({
             </Stack>
           </HStack>
           <Text as="small" color="gray.500" mt={{ base: 1 }}>
-            3h
+            {transformTimestamp(createdAt)}
           </Text>
         </Stack>
         <Box>
+          {/* Caption */}
           <Text>{text}</Text>
+          {/* Twit image if exist */}
           {imageUrl && (
             <AspectRatio ratio={4 / 3} mt={{ base: 4 }}>
               <Image src={imageUrl} alt="naruto" objectFit="cover" />
             </AspectRatio>
           )}
+          {/* Button Likes and Comments */}
           <Stack direction="row" gap={{ base: 4 }} mt={{ base: 4 }}>
             <Button variant="link">❤️ {likes}</Button>
             <Button
@@ -148,9 +205,10 @@ export default function TwitItem({
               💬 {commentLength}
             </Button>
           </Stack>
-
+          {/* Comments list */}
           {isOpen && (
             <>
+              {commentsData.length < 1 && <Text as="small">Loading...</Text>}
               {commentsData.slice(0, commentsLimit).map((comment) => (
                 <>
                   <TwitComment
@@ -160,6 +218,7 @@ export default function TwitItem({
                   />
                 </>
               ))}
+              {/* Button load more comments */}
               <Button
                 variant="link"
                 size="xs"
@@ -170,6 +229,7 @@ export default function TwitItem({
               >
                 Lihat komentar lainnya
               </Button>
+              {/* Merge new comment to existing */}
               {isAppendNewComment &&
                 newCommentPayload.map((item, index) => (
                   <TwitComment
@@ -178,6 +238,7 @@ export default function TwitItem({
                     text={item.body}
                   />
                 ))}
+              {/* Show alert if new comment contains pornoteks */}
               <Alert
                 status="info"
                 borderRadius="md"
@@ -189,20 +250,8 @@ export default function TwitItem({
                   mengandung <Text as="u">pornoteks</Text>!
                 </Text>
               </Alert>
-              <HStack mt={{ base: 4 }} ml={{ base: 4 }}>
-                <Input
-                  placeholder="Write comment"
-                  onChange={(e) => setNewComment(e.target.value)}
-                  value={newComment}
-                />
-                <Button
-                  bgColor="#8696FE"
-                  color="white"
-                  onClick={() => handleSubmitComment(newComment)}
-                >
-                  Send
-                </Button>
-              </HStack>
+              {/* New comment form */}
+              {<CommentForm handleSubmitComment={handleSubmitComment} />}
             </>
           )}
         </Box>

@@ -15,6 +15,7 @@
     "@emotion/styled": "^11.11.0",
     "date-fns": "^2.30.0",
     "date-fns-tz": "^2.0.0",
+    "formik": "^2.4.5",
     "framer-motion": "^10.16.4",
     "luxon": "^3.4.3",
     "random": "^4.1.0",

@@ -1,0 +1,5 @@
+const API_BASE_URL = import.meta.env.VITE_API_BASE_URL;
+const PROFILE_PICT_URL = import.meta.env.VITE_PROFILE_PICTURE_BASE_URL;
+const COMMENTS_URL = import.meta.env.VITE_COMMENTS_BASE_URL;
+
+export { API_BASE_URL, PROFILE_PICT_URL, COMMENTS_URL };

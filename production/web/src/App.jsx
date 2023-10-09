@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import {
   Container,
   Flex,
@@ -15,18 +15,26 @@ import TwitItem from "./components/TwitItem";
 import data from "./data";
 import { v4 as uuidv4 } from "uuid";
 import random from "random";
-import formatEpochTime from "./helpers/formatEpochTime";
-import getCurrentEpochTime from "./helpers/getCurrentEpochTime";
+import { API_BASE_URL, PROFILE_PICT_URL } from "./constant";
+import getRandomStyle from "./helpers/getRandomStyle";
+import getRandomColor from "./helpers/getRandomColor";
+import getRandomTimestampWithCurrentDateTime from "./helpers/getRandomTimestampWithCurrentDateTime";
 
 function App() {
   const [twits, setTwits] = useState(data);
-  const [newTwit, setNewTwit] = useState("");
   const { isOpen, onClose, onOpen } = useDisclosure({ defaultIsOpen: false });
 
-  const handleSubmitNewTwit = async (e) => {
-    e.preventDefault();
+  const [bgColor, setBgColor] = useState("");
+  const [style, setStyle] = useState("");
+
+  useEffect(() => {
+    setBgColor(getRandomColor());
+    setStyle(getRandomStyle());
+  }, []);
+
+  const handleSubmitNewTwit = async (newTwit) => {
     try {
-      const response = await fetch("https://syaifulhusein.me/predict", {
+      const response = await fetch(`${API_BASE_URL}/predict`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
@@ -46,18 +54,19 @@ function App() {
           text: newTwit,
           likes: random.int(0, 200),
           comments: random.int(0, 10),
-          createdAt: Date.now(),
+          createdAt: getRandomTimestampWithCurrentDateTime(),
         };
 
         copyTwits.splice(0, 0, payload);
 
         setTwits(copyTwits);
-        setNewTwit("");
+        onClose();
       } else {
         onOpen();
       }
     } catch (error) {
       console.error(error);
+      onClose();
     }
   };
 
@@ -73,7 +82,7 @@ function App() {
         <Heading>Twitwar</Heading>
         <HStack>
           <Avatar
-            src="https://api.dicebear.com/7.x/open-peeps/svg?backgroundColor=b6e3f4,c0aede,d1d4f9"
+            src={`${PROFILE_PICT_URL}/${style}/svg?backgroundColor=${bgColor}&seed=batistuta`}
             alt="profile picture"
             borderWidth={1}
             borderColor="black"
@@ -83,11 +92,7 @@ function App() {
       </Flex>
       <Container p={{ base: 0 }}>
         <Stack direction={{ base: "column" }} p={{ base: 4 }}>
-          <PostTwit
-            setNewTwit={setNewTwit}
-            newTwit={newTwit}
-            handleSubmitNewTwit={handleSubmitNewTwit}
-          />
+          <PostTwit handleSubmitNewTwit={handleSubmitNewTwit} />
           <Stack
             direction={{ base: "column" }}
             my={{ base: 8 }}
@@ -107,7 +112,7 @@ function App() {
               </Text>
             </Alert>
             {twits
-              .sort((a, b) => b.createdAt - a.createdAt)
+              .sort((a, b) => a.createdAt - b.createdAt)
               .map((item) => (
                 <TwitItem
                   key={item.id}
