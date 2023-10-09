@@ -15,18 +15,16 @@ import {
   Textarea,
 } from "@chakra-ui/react";
 import TwitComment from "./TwitComment";
-import getRandomColor from "../helpers/getRandomColor";
-import getRandomStyle from "../helpers/getRandomStyle";
 import transformTimestamp from "../helpers/transformTimestamp";
-import { PROFILE_PICT_URL, API_BASE_URL, COMMENTS_URL } from "../constant";
+import { API_BASE_URL, COMMENTS_URL } from "../constant";
 import { Formik, Form } from "formik";
+import random from "random";
 
 function CommentForm({ handleSubmitComment }) {
   return (
     <Formik
       initialValues={{ comment: "" }}
       onSubmit={async (values, actions) => {
-        console.log(values);
         try {
           await handleSubmitComment(values.comment);
           actions.setSubmitting(false);
@@ -77,6 +75,8 @@ export default function TwitItem({
   comments,
   createdAt,
   imageUrl,
+  profilePictureUrl,
+  user,
 }) {
   // Comment section
   const { isOpen, onToggle } = useDisclosure({
@@ -84,7 +84,11 @@ export default function TwitItem({
   });
 
   // Alert if comment contain pornoteks
-  const { isOpen: isOpenAltCom, onToggle: onToggleAltCom } = useDisclosure({
+  const {
+    isOpen: isOpenAltCom,
+    onOpen: onOpenAltCom,
+    onClose: onCloseAltCom,
+  } = useDisclosure({
     defaultIsOpen: false,
   });
 
@@ -95,23 +99,18 @@ export default function TwitItem({
 
   const [commentsData, setCommentsData] = useState([]);
   const [commentsLimit, setCommentsLimit] = useState(2);
-  const [commentLength, setCommentLength] = useState(comments);
+  const [commentLength, setCommentLength] = useState(comments + 1);
   const [newCommentPayload, setNewCommentPayload] = useState([]);
-
-  const [bgColor, setBgColor] = useState("");
-  const [style, setStyle] = useState("");
-
-  useEffect(() => {
-    setBgColor(getRandomColor());
-    setStyle(getRandomStyle());
-  }, []);
 
   const getComments = async () => {
     try {
       const response = await fetch(`${COMMENTS_URL}/comments`);
-
       const data = await response.json();
-      setCommentsData(data.slice(0, commentLength));
+
+      const startIndex = random.int(0, data.length - commentLength);
+      const endIndex = startIndex + commentLength;
+      console.log(startIndex, endIndex);
+      setCommentsData(data.slice(startIndex, endIndex));
     } catch (error) {
       console.error(error);
     }
@@ -136,19 +135,23 @@ export default function TwitItem({
         const copyCommentsData = [...commentsData];
 
         const payload = {
-          email: "batistuta",
+          id: user.id,
+          email: `${user.username}@mail.com`,
           body: newComment,
         };
 
         copyCommentsData.push(payload);
 
         setNewCommentPayload([...newCommentPayload, payload]);
-        // setCommentsData(copyCommentsData);
+
         setCommentLength((prev) => (prev += 1));
-        // setNewComment("");
+
         onOpenAppendNewComment();
+        // Hide alert if comment is not contains pornoteks
+        onCloseAltCom();
       } else {
-        onToggleAltCom();
+        // Show alert if comment contains pornoteks
+        onOpenAltCom();
       }
     } catch (error) {
       console.error(error);
@@ -174,9 +177,7 @@ export default function TwitItem({
         >
           <HStack>
             <Avatar
-              src={`${PROFILE_PICT_URL}/${style}/svg?backgroundColor=${bgColor}&seed=${
-                email.split("@")[0]
-              }`}
+              src={profilePictureUrl}
               size={{ base: "md" }}
               borderWidth={1}
               borderColor="black"
@@ -217,13 +218,12 @@ export default function TwitItem({
             <>
               {commentsData.length < 1 && <Text as="small">Loading...</Text>}
               {commentsData.slice(0, commentsLimit).map((comment) => (
-                <>
-                  <TwitComment
-                    key={comment.id}
-                    email={comment.email}
-                    text={comment.body}
-                  />
-                </>
+                <TwitComment
+                  key={comment.id}
+                  id={comment.id}
+                  email={comment.email}
+                  text={comment.body}
+                />
               ))}
               {/* Button load more comments */}
               <Button
@@ -238,9 +238,10 @@ export default function TwitItem({
               </Button>
               {/* Merge new comment to existing */}
               {isAppendNewComment &&
-                newCommentPayload.map((item, index) => (
+                newCommentPayload.map((item) => (
                   <TwitComment
-                    key={index}
+                    key={item.id}
+                    id={item.id}
                     email={item.email}
                     text={item.body}
                   />

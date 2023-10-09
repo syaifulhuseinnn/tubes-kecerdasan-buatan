@@ -1,6 +1,9 @@
 import { v4 as uuidv4 } from "uuid";
 import random from "random";
 import getRandomTimestampWithTimeZone from "./helpers/generateRandomTime";
+import { PROFILE_PICT_URL } from "./constant";
+import getRandomColor from "./helpers/getRandomColor";
+import getRandomStyle from "./helpers/getRandomStyle";
 
 const data = [
   {
@@ -11,6 +14,7 @@ const data = [
     comments: random.int(0, 10),
     imageUrl:
       "https://images.pexels.com/photos/230554/pexels-photo-230554.jpeg?auto=compress&cs=tinysrgb&w=800",
+    profilePictureUrl: `${PROFILE_PICT_URL}/${getRandomStyle()}/svg?backgroundColor=${getRandomColor()}`,
     createdAt: getRandomTimestampWithTimeZone(),
   },
   {
@@ -21,6 +25,7 @@ const data = [
     comments: random.int(0, 10),
     imageUrl:
       "https://images.pexels.com/photos/546819/pexels-photo-546819.jpeg?auto=compress&cs=tinysrgb&w=800",
+    profilePictureUrl: `${PROFILE_PICT_URL}/${getRandomStyle()}/svg?backgroundColor=${getRandomColor()}`,
     createdAt: getRandomTimestampWithTimeZone(),
   },
   {
@@ -30,6 +35,7 @@ const data = [
     likes: random.int(0, 200),
     comments: 1,
     imageUrl: "",
+    profilePictureUrl: `${PROFILE_PICT_URL}/${getRandomStyle()}/svg?backgroundColor=${getRandomColor()}`,
     createdAt: getRandomTimestampWithTimeZone(),
   },
   {
@@ -40,6 +46,7 @@ const data = [
     comments: 1,
     imageUrl:
       "https://images.pexels.com/photos/733872/pexels-photo-733872.jpeg?auto=compress&cs=tinysrgb&w=800",
+    profilePictureUrl: `${PROFILE_PICT_URL}/${getRandomStyle()}/svg?backgroundColor=${getRandomColor()}`,
     createdAt: getRandomTimestampWithTimeZone(),
   },
 ];

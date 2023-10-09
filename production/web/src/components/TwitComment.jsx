@@ -1,15 +1,23 @@
-import React, { useCallback, useEffect, useState } from "react";
+import React, { useEffect, useState } from "react";
 import { Avatar, HStack, VStack, Heading, Text } from "@chakra-ui/react";
 import getRandomColor from "../helpers/getRandomColor";
 import getRandomStyle from "../helpers/getRandomStyle";
 
-export default function TwitComment({ text, email }) {
-  const [bgColor, setBgColor] = useState("");
-  const [style, setStyle] = useState("");
+export default function TwitComment({ text, email, id }) {
+  const [profilePictureUrl, setProfilePictureUrl] = useState("");
 
   useEffect(() => {
-    setBgColor(getRandomColor());
-    setStyle(getRandomStyle());
+    const user = JSON.parse(localStorage.getItem("user"));
+
+    if (id === user.id) {
+      setProfilePictureUrl(user.profile_picture);
+    } else {
+      setProfilePictureUrl(
+        `https://api.dicebear.com/7.x/${getRandomStyle()}/svg?seed=${
+          email.split("@")[0]
+        }&backgroundColor=${getRandomColor()}`
+      );
+    }
   }, []);
 
   return (
@@ -22,7 +30,7 @@ export default function TwitComment({ text, email }) {
       <HStack>
         <Avatar
           name={email}
-          src={`https://api.dicebear.com/7.x/${style}/svg?seed=${email}&backgroundColor=${bgColor}`}
+          src={profilePictureUrl}
           size={{ base: "md" }}
           borderWidth={1}
           borderColor="black"
