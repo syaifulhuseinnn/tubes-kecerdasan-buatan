@@ -20,6 +20,8 @@ import {
   FormLabel,
   Input,
   FormHelperText,
+  ScaleFade,
+  useToast,
 } from "@chakra-ui/react";
 import PostTwit from "./components/PostTwit";
 import TwitItem from "./components/TwitItem";
@@ -123,6 +125,7 @@ function UsernameForm({ isOpen, onClose, setUser }) {
 }
 
 function App() {
+  const toast = useToast();
   const [user, setUser] = useState({});
   const [twits, setTwits] = useState(data);
   const { isOpen, onClose, onOpen } = useDisclosure({ defaultIsOpen: false });
@@ -143,6 +146,7 @@ function App() {
   }, []);
 
   const handleSubmitNewTwit = async (newTwit) => {
+    onClose();
     try {
       const response = await fetch(`${API_BASE_URL}/predict`, {
         method: "POST",
@@ -152,6 +156,10 @@ function App() {
         },
         body: JSON.stringify({ text: newTwit }),
       });
+
+      if (!response.ok) {
+        throw new Error("Network response was not ok");
+      }
 
       const data = await response.json();
 
@@ -172,12 +180,38 @@ function App() {
         copyTwits.splice(0, 0, payload);
 
         setTwits(copyTwits);
-        onClose();
       } else {
         onOpen();
       }
     } catch (error) {
-      console.error(error);
+      if (error instanceof TypeError && error.message === "Failed to fetch") {
+        console.error(
+          "Network request failed. Check your internet connection or server availability."
+        );
+        toast({
+          title: `Error`,
+          description:
+            "Network request failed. Check your internet connection or server availability.",
+          status: "error",
+          isClosable: true,
+        });
+      } else if (error.message === "Network response was not ok") {
+        console.error("Server is not reachable or refused the connection.");
+        toast({
+          title: `Error`,
+          description: "Server is not reachable or refused the connection.",
+          status: "error",
+          isClosable: true,
+        });
+      } else {
+        console.error("Fetch error:", error.message);
+        toast({
+          title: `Error`,
+          description: `Fetch error: ${error.message}`,
+          status: "error",
+          isClosable: true,
+        });
+      }
       onClose();
     }
   };
@@ -210,19 +244,21 @@ function App() {
             my={{ base: 8 }}
             gap={{ base: 8 }}
           >
-            <Alert
-              status="info"
-              borderRadius="md"
-              display={isOpen ? "block" : "none"}
-            >
-              <Text>
-                <Text as="span" fontSize="2xl">
-                  🙅‍♂️
-                </Text>{" "}
-                Twit kamu <Text as="u">disembunyikan</Text> karena mengandung{" "}
-                <Text as="u">pornoteks</Text>!
-              </Text>
-            </Alert>
+            <ScaleFade initialScale={0.9} in={isOpen}>
+              <Alert
+                status="info"
+                borderRadius="md"
+                display={isOpen ? "block" : "none"}
+              >
+                <Text>
+                  <Text as="span" fontSize="2xl">
+                    🙅‍♂️
+                  </Text>{" "}
+                  Twit kamu <Text as="u">disembunyikan</Text> karena mengandung{" "}
+                  <Text as="u">pornoteks</Text>!
+                </Text>
+              </Alert>
+            </ScaleFade>
             {twits
               .sort((a, b) => a.createdAt - b.createdAt)
               .map((item) => (

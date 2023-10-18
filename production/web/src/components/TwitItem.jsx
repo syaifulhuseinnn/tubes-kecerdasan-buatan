@@ -7,12 +7,12 @@ import {
   Text,
   HStack,
   Button,
-  Input,
   useDisclosure,
   Avatar,
   AspectRatio,
   Alert,
   Textarea,
+  useToast,
 } from "@chakra-ui/react";
 import TwitComment from "./TwitComment";
 import transformTimestamp from "../helpers/transformTimestamp";
@@ -81,6 +81,8 @@ export default function TwitItem({
   profilePictureUrl,
   user,
 }) {
+  const toast = useToast();
+
   // Comment section
   const { isOpen, onToggle } = useDisclosure({
     defaultIsOpen: false,
@@ -130,6 +132,8 @@ export default function TwitItem({
   const handleLoadMoreComments = () => setCommentsLimit((prev) => (prev += 1));
 
   const handleSubmitComment = async (newComment) => {
+    // Hide alert if comment is not contains pornoteks
+    onCloseAltCom();
     try {
       const response = await fetch(`${API_BASE_URL}/predict`, {
         method: "POST",
@@ -139,6 +143,10 @@ export default function TwitItem({
         },
         body: JSON.stringify({ text: newComment }),
       });
+
+      if (!response.ok) {
+        throw new Error("Network response was not ok");
+      }
 
       const data = await response.json();
 
@@ -155,14 +163,39 @@ export default function TwitItem({
         setCommentLength((prev) => (prev += 1));
 
         onOpenAppendNewComment();
-        // Hide alert if comment is not contains pornoteks
-        onCloseAltCom();
       } else {
         // Show alert if comment contains pornoteks
         onOpenAltCom();
       }
     } catch (error) {
-      console.error(error);
+      if (error instanceof TypeError && error.message === "Failed to fetch") {
+        console.error(
+          "Network request failed. Check your internet connection or server availability."
+        );
+        toast({
+          title: `Error`,
+          description:
+            "Network request failed. Check your internet connection or server availability.",
+          status: "error",
+          isClosable: true,
+        });
+      } else if (error.message === "Network response was not ok") {
+        console.error("Server is not reachable or refused the connection.");
+        toast({
+          title: `Error`,
+          description: "Server is not reachable or refused the connection.",
+          status: "error",
+          isClosable: true,
+        });
+      } else {
+        console.error("Fetch error:", error.message);
+        toast({
+          title: `Error`,
+          description: `Fetch error: ${error.message}`,
+          status: "error",
+          isClosable: true,
+        });
+      }
     }
   };
 

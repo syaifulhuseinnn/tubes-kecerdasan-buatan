@@ -7,7 +7,6 @@ export default function PostTwit({ handleSubmitNewTwit }) {
     <Formik
       initialValues={{ newTwit: "" }}
       onSubmit={async (values, actions) => {
-        console.log(values);
         try {
           await handleSubmitNewTwit(values.newTwit);
           actions.setSubmitting(false);
@@ -24,14 +23,49 @@ export default function PostTwit({ handleSubmitNewTwit }) {
             gap={{ base: 4 }}
             mt={{ base: 4 }}
           >
-            <Textarea
-              placeholder="Apa yang sedang kamu fikirkan?"
-              size={{ base: "lg" }}
-              onChange={props.handleChange}
-              value={props.values.newTwit}
-              name="newTwit"
-              resize="none"
-            />
+            <Stack direction={{ base: "column" }}>
+              <Stack
+                direction={{ base: "column", md: "row" }}
+                display={{ base: `${props.touched.newTwit ? "flex" : "none"}` }}
+              >
+                <Button
+                  size={{ base: "xs" }}
+                  maxWidth="fit-content"
+                  onClick={() =>
+                    props.setFieldValue(
+                      "newTwit",
+                      "enak banget hari ini aku bercinta sama pacarku"
+                    )
+                  }
+                >
+                  enak banget hari ini aku bercinta sama pacarku
+                </Button>
+                <Button
+                  size={{ base: "xs" }}
+                  maxWidth="fit-content"
+                  onClick={() =>
+                    props.setFieldValue("newTwit", "Seru nih kenyot nenen nya")
+                  }
+                >
+                  Seru nih kenyot nenen nya
+                </Button>
+              </Stack>
+              <Textarea
+                placeholder="Apa yang sedang kamu fikirkan?"
+                size={{ base: "lg" }}
+                onChange={props.handleChange}
+                onFocus={(e) => props.setFieldTouched(e.target.name)}
+                // onBlur={(e) =>
+                //   setTimeout(
+                //     () => props.setFieldTouched(e.target.name, false),
+                //     1000
+                //   )
+                // }
+                value={props.values.newTwit}
+                name="newTwit"
+                resize="none"
+              />
+            </Stack>
             <Button
               maxWidth={{ base: "fit-content" }}
               alignSelf={{ base: "flex-end" }}
